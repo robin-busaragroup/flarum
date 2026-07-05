@@ -6,6 +6,7 @@ import addFicCard from './addFicCard';
 import addCwFiltering from './addCwFiltering';
 import addCwInterstitial from './addCwInterstitial';
 import addDiscussionControls from './addDiscussionControls';
+import addReadalongCard from './addReadalongCard';
 import addTypeNavigation from './addTypeNavigation';
 import addSettingsFilters from './addSettingsFilters';
 
@@ -18,6 +19,7 @@ app.initializers.add('ao3-companion', () => {
   addCwFiltering();
   addCwInterstitial();
   addDiscussionControls();
+  addReadalongCard();
   addTypeNavigation();
   addSettingsFilters();
 });

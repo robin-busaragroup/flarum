@@ -6,7 +6,47 @@ import extractText from 'flarum/common/utils/extractText';
 
 import { TYPES, typeLabel, warningVocabulary } from '../common/ao3';
 
-function fetchAo3Metadata(fields, onDone) {
+// Map fetched AO3 relationships onto forum ship tags, and add matched tags to
+// the composer's tag selection. Returns { added:[names], unmatched:[ao3names] }.
+function suggestShipTags(component, relationships) {
+  const aliases = app.forum.attribute('ao3ShipAliases') || {};
+  const current = component.composer.fields.tags || [];
+  const currentIds = new Set(current.map((t) => t.id()));
+
+  const added = [];
+  const unmatched = [];
+
+  (relationships || []).forEach((rel) => {
+    const lower = rel.toLowerCase();
+    let slug = null;
+
+    for (const [needle, target] of Object.entries(aliases)) {
+      if (lower.includes(needle)) {
+        slug = target;
+        break;
+      }
+    }
+
+    const tag = slug && app.store.getBy('tags', 'slug', slug);
+
+    if (tag) {
+      if (!currentIds.has(tag.id())) {
+        current.push(tag);
+        currentIds.add(tag.id());
+        added.push(tag.name());
+      }
+    } else {
+      unmatched.push(rel);
+    }
+  });
+
+  component.composer.fields.tags = current;
+
+  return { added, unmatched };
+}
+
+function fetchAo3Metadata(component, onDone) {
+  const fields = component.composer.fields;
   const match = (fields.ao3FicUrl || '').match(/archiveofourown\.org\/works\/(\d+)/);
 
   if (!match) {
@@ -29,6 +69,8 @@ function fetchAo3Metadata(fields, onDone) {
 
       fields.ao3ContentWarnings = [...new Set([...(fields.ao3ContentWarnings || []), ...suggested])];
 
+      const ships = suggestShipTags(component, data.relationships);
+
       app.alerts.show(
         { type: 'success' },
         app.translator.trans('ao3-companion.forum.composer.fetch_success', {
@@ -36,6 +78,20 @@ function fetchAo3Metadata(fields, onDone) {
           rating: data.rating || '—',
         })
       );
+
+      if (ships.added.length) {
+        app.alerts.show(
+          { type: 'success' },
+          app.translator.trans('ao3-companion.forum.composer.ships_added', { ships: ships.added.join(', ') })
+        );
+      }
+
+      if (ships.unmatched.length) {
+        app.alerts.show(
+          {},
+          app.translator.trans('ao3-companion.forum.composer.ships_unmatched', { ships: ships.unmatched.join(', ') })
+        );
+      }
     })
     .catch(() => {
       app.alerts.show({ type: 'error' }, app.translator.trans('ao3-companion.forum.composer.fetch_failed'));
@@ -102,7 +158,7 @@ export default function addComposerFields() {
               disabled={!/archiveofourown\.org\/works\/\d+/.test(fields.ao3FicUrl || '')}
               onclick={() => {
                 this.ao3Fetching = true;
-                fetchAo3Metadata(fields, () => {
+                fetchAo3Metadata(this, () => {
                   this.ao3Fetching = false;
                   m.redraw();
                 });

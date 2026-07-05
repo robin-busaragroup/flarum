@@ -10,10 +10,10 @@ A **privacy-first, anonymous forum for AO3 readers to discuss fanfics**, built o
 | AO3-reader need | How it's covered |
 | --- | --- |
 | **Fandom tags** | `flarum/tags` primary tags — one space per fandom (Harry Potter, Marvel, Anime & Manga, K-Pop & RPF, Books & Lit, Other Fandoms seeded) |
-| **Pairing/ship tags** | Secondary tags (Drarry, Wolfstar, Stucky, Reylo, Rare Pairs, Gen) plus trope tags (Fluff, Angst, Hurt/Comfort, AU, Slow Burn, Fix-It, Canon Divergence, Long Fic) |
+| **Pairing/ship tags** | Secondary tags (Drarry, Wolfstar, Stucky, Reylo, Rare Pairs, Gen) plus trope tags (Fluff, Angst, Hurt/Comfort, AU, Slow Burn, Fix-It, Canon Divergence, Long Fic). *Fetch from AO3* maps the work's canonical relationships onto these ship tags and adds them automatically |
 | **Spoiler labels** | Per-thread "Spoilers through …" scope shown as a badge; `[spoiler]…[/spoiler]` and `[spoiler=Chapter 12]…[/spoiler]` collapsed blocks; `\|\|inline\|\|` blacked-out spoiler text |
-| **Fic recommendation threads** | `Fic Rec` thread type with fic title + AO3 link metadata card and a dedicated sidebar filter; *Fetch from AO3* auto-fills the title and archive warnings from a pasted work link |
-| **Chapter discussion threads** | `Chapter Discussion` thread type with chapter number + spoiler scope on the thread header |
+| **Fic recommendation threads** | `Fic Rec` thread type with fic title + AO3 link metadata card and a dedicated sidebar filter; *Fetch from AO3* auto-fills the title, archive warnings, and ship tags from a pasted work link |
+| **Chapter discussion threads** | `Chapter Discussion` thread type with chapter number + spoiler scope on the thread header, plus an optional **readalong schedule** — a checkpoint timeline (chapter · date) that highlights which chapter the group is reading now |
 | **"Looking for a fic" posts** | `Looking for a Fic` thread type with its own badge and sidebar filter; the OP (or a mod) can *Mark as found*, which adds a green Found badge and makes the thread searchable via `is:found` |
 | **Content warning filters** | Threads carry AO3-style archive warnings (admin-editable vocabulary); each reader picks warnings to filter in Settings → matching threads are blurred in lists, and direct links are blocked by a full-page interstitial until the reader opts in |
 | **Private / semi-private fandom spaces** | Restricted tags with scoped permissions — the seeded **Members Lounge** is invisible to guests, visible/postable for members and mods |
@@ -54,6 +54,13 @@ Lives in [`extensions/ao3-companion`](extensions/ao3-companion) and provides:
 - `GET /api/ao3/work/{id}`: server-side AO3 work metadata lookup (title, rating,
   archive warnings, fandoms, ships, chapter count). Registered users only, and
   SSRF-safe — the URL is constructed from a numeric work id against a fixed host.
+  Fetched relationships are mapped to forum ship tags via a configurable alias map.
+- Readalong scheduler: a `Schedule readalong` control on chapter threads opens a modal
+  to add checkpoint rows (chapter · label · date); the discussion sidebar renders them as
+  a timeline that marks each checkpoint done / reading-now / upcoming against today's date.
+- Weekly "still looking" digest: opt-in per user, `php flarum ao3:lff-digest` (scheduled
+  weekly) emails subscribers the open *Looking for a Fic* threads. `--dry-run` prints the
+  digest instead of sending. Needs mail configured; verified end-to-end via the `log` driver.
 - Admin settings: warning vocabulary (one per line), IP anonymization toggle,
   "require a thread type" toggle.
 

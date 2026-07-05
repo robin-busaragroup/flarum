@@ -26,6 +26,8 @@ ao3-companion:
       fetch_bad_url: That doesn't look like an AO3 work link.
       fetch_success: "Found: {title} ({rating})"
       fetch_failed: Couldn't fetch that work — it may be restricted or AO3 may be unreachable.
+      ships_added: "Added ship tags: {ships}"
+      ships_unmatched: "AO3 ships with no forum tag yet: {ships}"
 
     badges:
       spoilers: "Spoilers: {scope}"
@@ -39,6 +41,22 @@ ao3-companion:
       edit_details: Edit AO3 details
       mark_found: Mark as found
       mark_unfound: Mark as not found
+      schedule_readalong: Schedule readalong
+
+    readalong:
+      heading: Readalong schedule
+      chapter_prefix: "Ch. {number}"
+      status_done: Done
+      status_current: Reading now
+      status_upcoming: Upcoming
+      modal_title: Readalong schedule
+      modal_help: Add a row per checkpoint. Readers see which chapter the group is on.
+      add_row: Add checkpoint
+      col_chapter: Chapter
+      col_label: Label (optional)
+      col_date: Date
+      save: Save schedule
+      empty: No checkpoints yet.
 
     interstitial:
       heading: Content warning
@@ -60,6 +78,8 @@ ao3-companion:
       hide_spoilers_label: Blur threads marked as containing spoilers
       hidden_warnings_label: Blur threads with these content warnings
       hidden_warnings_help: Threads carrying a warning you select here will be blurred in lists and require a click to reveal.
+      lff_digest_label: Email me a weekly digest of open "looking for a fic" threads
+      lff_digest_help: A once-a-week summary of fic searches still waiting for an answer. Off by default.
 
     lists:
       type_all: All threads

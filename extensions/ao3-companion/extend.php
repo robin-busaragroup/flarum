@@ -10,6 +10,8 @@
 use Ao3\Companion\Api\Controller\Ao3WorkLookupController;
 use Ao3\Companion\Api\DiscussionResourceFields;
 use Ao3\Companion\Api\UserResourceFields;
+use Ao3\Companion\Console\LffDigestCommand;
+use Ao3\Companion\Console\WeeklySchedule;
 use Ao3\Companion\Formatter\ConfigureSpoilers;
 use Ao3\Companion\Listener\AnonymizeIpAddress;
 use Ao3\Companion\Listener\PrivacyDefaults;
@@ -23,6 +25,14 @@ use Flarum\Post\Event\Saving as PostSaving;
 use Flarum\User\Event\Registered;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\User;
+
+// AO3 canonical relationship (substring, lowercased) -> forum ship-tag slug.
+const AO3_SHIP_ALIASES = [
+    'draco malfoy/harry potter' => 'drarry',
+    'sirius black/remus lupin' => 'wolfstar',
+    'steve rogers/bucky barnes' => 'stucky',
+    'ben solo' => 'reylo',
+];
 
 return [
     (new Extend\Frontend('forum'))
@@ -38,6 +48,7 @@ return [
     (new Extend\Model(Discussion::class))
         ->cast('ao3_chapter', 'int')
         ->cast('ao3_content_warnings', 'array')
+        ->cast('ao3_readalong', 'array')
         ->cast('ao3_solved', 'bool'),
 
     (new Extend\Model(User::class))
@@ -55,7 +66,12 @@ return [
         ->default('ao3-companion.anonymize_ips', true)
         ->default('ao3-companion.require_type', false)
         ->serializeToForum('ao3Warnings', 'ao3-companion.warnings')
-        ->serializeToForum('ao3RequireType', 'ao3-companion.require_type', 'boolval'),
+        ->serializeToForum('ao3RequireType', 'ao3-companion.require_type', 'boolval')
+        ->serializeToForum('ao3ShipAliases', 'ao3-companion.ship_aliases', fn ($value) => json_decode($value ?: '', true) ?: AO3_SHIP_ALIASES),
+
+    // Opt-in weekly email listing fic searches still open ("looking for a fic").
+    (new Extend\User())
+        ->registerPreference('ao3-companion.lff_digest', 'boolval', false),
 
     (new Extend\Formatter())
         ->configure(ConfigureSpoilers::class),
@@ -66,6 +82,10 @@ return [
 
     (new Extend\Routes('api'))
         ->get('/ao3/work/{id:\d+}', 'ao3.work', Ao3WorkLookupController::class),
+
+    (new Extend\Console())
+        ->command(LffDigestCommand::class)
+        ->schedule(LffDigestCommand::class, WeeklySchedule::class),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
         ->addFilter(DiscussionSearcher::class, Ao3TypeFilter::class)

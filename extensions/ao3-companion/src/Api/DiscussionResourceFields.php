@@ -95,9 +95,55 @@ class DiscussionResourceFields
             Schema\Boolean::make('ao3Solved')
                 ->writable(fn (Discussion $discussion, Context $context) => $context->updating() && $canEdit($discussion, $context)),
 
+            // Readalong schedule: a list of { chapter:int, label:string,
+            // date:"YYYY-MM-DD" } entries for chapter-discussion threads.
+            Schema\Arr::make('ao3Readalong')
+                ->nullable()
+                ->writable($writable)
+                ->set(function (Discussion $discussion, ?array $value) {
+                    $discussion->ao3_readalong = $this->normalizeReadalong($value);
+                }),
+
             Schema\Boolean::make('canAo3Edit')
                 ->get(fn (Discussion $discussion, Context $context) => $canEdit($discussion, $context)),
         ];
+    }
+
+    /**
+     * Sanitize a readalong schedule to a clean, date-sorted list.
+     *
+     * @return array<int, array{chapter:?int, label:string, date:string}>|null
+     */
+    protected function normalizeReadalong(?array $value): ?array
+    {
+        $entries = [];
+
+        foreach ($value ?? [] as $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
+            $date = trim((string) ($entry['date'] ?? ''));
+
+            // Require an ISO date; the schedule is meaningless without one.
+            if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                continue;
+            }
+
+            $chapter = isset($entry['chapter']) && (int) $entry['chapter'] > 0
+                ? (int) $entry['chapter']
+                : null;
+
+            $entries[] = [
+                'chapter' => $chapter,
+                'label' => mb_substr(trim((string) ($entry['label'] ?? '')), 0, 120),
+                'date' => $date,
+            ];
+        }
+
+        usort($entries, fn ($a, $b) => $a['date'] <=> $b['date']);
+
+        return $entries ?: null;
     }
 
     /**

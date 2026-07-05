@@ -15,6 +15,7 @@ export default [
     .attribute('ao3SpoilerScope')
     .attribute('ao3ContentWarnings')
     .attribute('ao3Solved')
+    .attribute('ao3Readalong')
     .attribute('canAo3Edit'),
 
   new Extend.Model(User) //

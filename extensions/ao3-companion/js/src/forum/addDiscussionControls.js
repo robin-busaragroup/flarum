@@ -39,6 +39,16 @@ function extendControls(DiscussionControls) {
         -11
       );
     }
+
+    if (discussion.ao3Type() === 'chapter') {
+      items.add(
+        'ao3Readalong',
+        <Button icon="fas fa-calendar-days" onclick={() => app.modal.show(() => import('./components/Ao3ReadalongModal'), { discussion })}>
+          {trans('schedule_readalong')}
+        </Button>,
+        -9
+      );
+    }
   });
 }
 

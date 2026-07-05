@@ -42,6 +42,20 @@ export default function addSettingsFilters() {
             ))}
           </div>
         )}
+
+        <div className="Form-group">
+          <Switch
+            state={!!user.preferences()['ao3-companion.lff_digest']}
+            onchange={(value) => {
+              const preferences = user.preferences();
+              preferences['ao3-companion.lff_digest'] = value;
+              user.save({ preferences });
+            }}
+          >
+            {trans('lff_digest_label')}
+          </Switch>
+          <p className="helpText">{trans('lff_digest_help')}</p>
+        </div>
       </FieldSet>,
       40
     );
