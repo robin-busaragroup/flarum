@@ -1,0 +1,30 @@
+{
+    "name": "ao3/companion",
+    "description": "AO3 reader companion: thread types (fic recs, chapter discussions, looking-for-fic), spoiler labels, content warnings with reader-side filters, and privacy hardening.",
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": "^2.0.0-rc.4"
+    },
+    "authors": [
+        {
+            "name": "AOFORUM"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ao3\\Companion\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "AO3 Companion",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-book-open",
+                "backgroundColor": "#900",
+                "color": "#fff"
+            }
+        }
+    }
+}

@@ -1,0 +1,178 @@
+// ---- Thread-type + spoiler badges -------------------------------------
+
+.Badge--ao3-rec {
+  background: #2e7d32;
+  color: #fff;
+}
+
+.Badge--ao3-chapter {
+  background: #1565c0;
+  color: #fff;
+}
+
+.Badge--ao3-lff {
+  background: #6a1b9a;
+  color: #fff;
+}
+
+.Badge--ao3-spoiler {
+  background: #212121;
+  color: #ffb300;
+}
+
+.Badge--ao3-cw {
+  background: #b71c1c;
+  color: #fff;
+}
+
+// ---- Content-warning chips ----------------------------------------------
+
+.Ao3Cw {
+  display: inline-block;
+  padding: 1px 8px;
+  margin: 0 5px 4px 0;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  background: #b71c1c;
+  color: #fff;
+}
+
+// ---- Fic metadata card on discussion pages -----------------------------
+
+.Ao3FicCard {
+  border-left: 4px solid #900;
+  border-radius: var(--border-radius);
+  padding: 10px 15px;
+  margin-top: 12px;
+  background: rgba(0, 0, 0, 0.25);
+  max-width: 100%;
+
+  &-title {
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  &-meta {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 3px;
+
+    > span + span::before {
+      content: "·";
+      margin: 0 6px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+
+  &-warnings {
+    margin-top: 8px;
+  }
+}
+
+// ---- Reader-side content-warning blur ----------------------------------
+
+.DiscussionListItem--ao3-blurred {
+  position: relative;
+
+  .DiscussionListItem-content {
+    filter: blur(6px);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  &::after {
+    content: attr(data-ao3-cw);
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 20px;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--muted-color);
+    cursor: pointer;
+  }
+}
+
+// ---- Inline [spoiler] blocks in posts -----------------------------------
+
+.Post-body details.Ao3Spoiler {
+  border: 1px dashed var(--muted-color);
+  border-radius: var(--border-radius);
+  padding: 6px 10px;
+  margin: 8px 0;
+
+  > summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--muted-color);
+  }
+
+  &[open] > summary {
+    margin-bottom: 6px;
+  }
+}
+
+// Inline ||spoiler|| text: revealed on hover or keyboard focus.
+.Post-body .Ao3SpoilerInline {
+  background: var(--text-color);
+  color: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover,
+  &:focus {
+    color: var(--body-bg);
+  }
+}
+
+// ---- Composer AO3 details panel -----------------------------------------
+
+.Ao3ComposerFields {
+  border-top: 1px solid var(--control-bg);
+  margin-top: 8px;
+  padding-top: 10px;
+
+  &-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    > * {
+      flex: 1 1 160px;
+    }
+
+    .Select {
+      display: block;
+    }
+  }
+
+  .Ao3CwChecklist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+
+    label {
+      font-weight: normal;
+      font-size: 12px;
+      margin: 0;
+    }
+
+    input {
+      margin-right: 4px;
+    }
+  }
+}

@@ -1,0 +1,56 @@
+ao3-companion:
+  lib:
+    type_rec: Fic Rec
+    type_chapter: Chapter Discussion
+    type_lff: Looking for a Fic
+    type_general: General
+    spoiler_reveal: Spoiler — click to reveal
+
+  forum:
+    composer:
+      type_label: Thread type
+      type_placeholder: Choose a thread type (optional)
+      fic_title_label: Fic title
+      fic_title_placeholder: e.g. All the Young Dudes
+      fic_url_label: AO3 link
+      fic_url_placeholder: https://archiveofourown.org/works/…
+      chapter_label: Chapter
+      chapter_placeholder: "Chapter number under discussion"
+      spoiler_scope_label: Spoilers through
+      spoiler_scope_placeholder: e.g. "Chapter 12" or "Full work"
+      content_warnings_label: Content warnings
+      content_warnings_none: None apply
+      details_heading: "AO3 details"
+      type_required_alert: Please choose a thread type before posting.
+
+    badges:
+      spoilers: "Spoilers: {scope}"
+      spoilers_generic: Spoilers
+
+    discussion:
+      fic_title: "Fic: {title}"
+      chapter: "Chapter {number}"
+      open_on_ao3: Open on AO3
+
+    filters:
+      hidden_by_cw: This thread is hidden by your content filters ({warnings})
+      blurred_by_cw: "Content warnings: {warnings} — click to reveal"
+      show_anyway: Show anyway
+
+    settings:
+      heading: Content filters
+      hide_spoilers_label: Blur threads marked as containing spoilers
+      hidden_warnings_label: Blur threads with these content warnings
+      hidden_warnings_help: Threads carrying a warning you select here will be blurred in lists and require a click to reveal.
+
+    lists:
+      type_all: All threads
+      type_heading: Thread type
+
+  admin:
+    settings:
+      warnings_label: Content warning vocabulary
+      warnings_help: One warning per line. These appear as checkboxes when starting a thread and as reader-side filters. Defaults follow AO3's archive warnings.
+      anonymize_ips_label: Never store poster IP addresses
+      anonymize_ips_help: When enabled, IP addresses are stripped before posts and users are saved. Existing stored IPs are not affected.
+      default_type_required_label: Require a thread type when starting a discussion

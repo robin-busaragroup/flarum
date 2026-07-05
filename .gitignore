@@ -9,3 +9,5 @@ core
 studio.json
 composer.lock
 
+storage/*.sqlite
+extensions/*/js/node_modules

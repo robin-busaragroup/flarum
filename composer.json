@@ -20,7 +20,17 @@
         "source": "https://github.com/flarum/flarum",
         "docs": "https://docs.flarum.org/"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "extensions/*",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "require": {
+        "ao3/companion": "*@dev",
         "flarum/core": "^2.0.0-rc.4",
         "flarum/audit": "*",
         "flarum/approval": "*",

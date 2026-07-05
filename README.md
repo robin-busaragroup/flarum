@@ -1,40 +1,87 @@
-<p align="center">
-<a href="https://flarum.org/"><img src="https://flarum.org/images/flarum.svg"></a>
-</p>
+# AOFORUM
 
-<p align="center">
-<a href="https://packagist.org/packages/flarum/core"><img src="https://poser.pugx.org/flarum/core/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/flarum/core"><img src="https://poser.pugx.org/flarum/core/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/flarum/core"><img src="https://poser.pugx.org/flarum/core/license.svg" alt="License"></a>
-</p>
+A **privacy-first, anonymous forum for AO3 readers to discuss fanfics**, built on a
+[Flarum 2.0](https://flarum.org) scaffold (forked from
+[flarum/flarum](https://github.com/flarum/flarum)) plus a custom first-party extension,
+[`ao3/companion`](extensions/ao3-companion).
 
-## About Flarum
+## Feature map
 
-**[Flarum](https://flarum.org/) is a delightfully simple discussion platform for your website.** It's fast and easy to use, with all the features you need to run a successful community. It is designed to be:
+| AO3-reader need | How it's covered |
+| --- | --- |
+| **Fandom tags** | `flarum/tags` primary tags — one space per fandom (Harry Potter, Marvel, Anime & Manga, K-Pop & RPF, Books & Lit, Other Fandoms seeded) |
+| **Pairing/ship tags** | Secondary tags (Drarry, Wolfstar, Stucky, Reylo, Rare Pairs, Gen) plus trope tags (Fluff, Angst, Hurt/Comfort, AU, Slow Burn, Fix-It, Canon Divergence, Long Fic) |
+| **Spoiler labels** | Per-thread "Spoilers through …" scope shown as a badge; `[spoiler]…[/spoiler]` and `[spoiler=Chapter 12]…[/spoiler]` collapsed blocks; `\|\|inline\|\|` blacked-out spoiler text |
+| **Fic recommendation threads** | `Fic Rec` thread type with fic title + AO3 link metadata card and a dedicated sidebar filter |
+| **Chapter discussion threads** | `Chapter Discussion` thread type with chapter number + spoiler scope on the thread header |
+| **"Looking for a fic" posts** | `Looking for a Fic` thread type with its own badge and sidebar filter |
+| **Content warning filters** | Threads carry AO3-style archive warnings (admin-editable vocabulary); each reader picks warnings to filter in Settings → threads matching them are blurred in lists until clicked |
+| **Private / semi-private fandom spaces** | Restricted tags with scoped permissions — the seeded **Members Lounge** is invisible to guests, visible/postable for members and mods |
+| **Long comments and quote replies** | `flarum/mentions` quote-reply and post mentions; SQLite/MySQL TEXT posts, full Markdown + BBCode |
 
-* **Fast and simple.** No clutter, no bloat, no complex dependencies. Flarum is built with PHP so it’s quick and easy to deploy. The interface is powered by Mithril, a performant JavaScript framework with a tiny footprint.
+## Privacy stance
 
-* **Beautiful and responsive.** This is forum software for humans. Flarum is carefully designed to be consistent and intuitive across platforms, out-of-the-box.
+- **No IP retention** — the extension nulls poster IP addresses before every post is saved
+  (on by default, admin-toggleable). Mods' "view post IPs" permission is removed.
+- **Anonymous display names** — `flarum/nicknames` is enabled; emails are never exposed via
+  the API and the display name never has to be a real name.
+- **Reader-side content control** — spoiler and content-warning filters are personal
+  preferences, visible and writable only by the account that owns them.
+- **GDPR tooling** — `flarum/gdpr` gives every user self-service data export and erasure
+  requests.
+- **Last-seen hidden from staff** — the mod "view last seen" permission is removed;
+  users can additionally hide online status per account.
+- **Local-first storage** — SQLite by default; no third-party services required to run.
 
-* **Powerful and extensible.** Customize, extend, and integrate Flarum to suit your community. Flarum’s architecture is amazingly flexible, with a powerful Extension API.
+## The `ao3/companion` extension
 
-![screenshot](https://flarum.org/assets/flarum/home-screenshot.png)
+Lives in [`extensions/ao3-companion`](extensions/ao3-companion) and provides:
 
-## Installation
+- Discussion fields: `ao3Type` (`rec` / `chapter` / `lff` / `general`), `ao3FicTitle`,
+  `ao3FicUrl` (http/https only), `ao3Chapter`, `ao3SpoilerScope`, `ao3ContentWarnings`
+  (validated against the admin vocabulary).
+- User fields: `ao3HiddenWarnings`, `ao3HideSpoilers` (self-only visibility).
+- Composer UI: thread-type select, fic metadata inputs, content-warning checklist.
+- Discussion list: type/spoiler/CW badges, CSS blur + click-to-reveal for filtered threads.
+- Discussion page: fic metadata card with "Open on AO3" link.
+- Server-side `filter[ao3Type]` for the discussion list, wired to sidebar navigation.
+- Spoiler BBCode + inline spoiler formatter.
+- Admin settings: warning vocabulary (one per line), IP anonymization toggle,
+  "require a thread type" toggle.
 
-Read the **[Installation guide](https://docs.flarum.org/install)** to get started. For support, refer to the [documentation](https://docs.flarum.org/), and ask questions on the [community forum](https://discuss.flarum.org/) or [Discord chat](https://flarum.org/discord/).
+## Local development
 
-## Contributing
+Requirements: PHP ≥ 8.2 (with `pdo_sqlite`), Composer, Node 18+ (only to rebuild extension JS).
 
-Thank you for considering contributing to Flarum! Please read the **[Contributing guide](https://docs.flarum.org/contributing)** to learn how you can help.
+```bash
+composer install
 
-This repository only holds the Flarum skeleton application. Most development happens in [flarum/core](https://github.com/flarum/core).
+# install with SQLite (interactive; or use `php flarum install -f <config.json>`)
+php flarum install
 
-## Security Vulnerabilities
+php flarum extension:enable ao3-companion
+php flarum extension:enable flarum-nicknames
+php flarum extension:enable flarum-gdpr
+php flarum extension:enable flarum-messages
 
-If you discover a security vulnerability within Flarum, please follow our [security policy](https://github.com/flarum/core/security/policy) so we can address it promptly.
+# serve
+php -S localhost:8000 -t public
+```
 
-## License
+To rebuild the extension frontend after changing `extensions/ao3-companion/js/src`:
 
-Flarum is open-source software licensed under the [MIT License](https://github.com/flarum/flarum/blob/master/LICENSE).
+```bash
+cd extensions/ao3-companion/js
+npm install
+npm run build
+cd ../../..
+php flarum assets:publish && php flarum cache:clear
+```
 
+A seed for the fandom/ship tag taxonomy and the Members Lounge permissions is in
+[`docs/seed-tags.sql`](docs/seed-tags.sql).
+
+## Credits
+
+Scaffold: [flarum/flarum](https://github.com/flarum/flarum) (MIT). All Flarum bundled
+extensions are first-party MIT-licensed packages.
