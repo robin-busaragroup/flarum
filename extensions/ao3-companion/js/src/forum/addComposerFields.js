@@ -1,9 +1,47 @@
 import app from 'flarum/forum/app';
 import { extend, override } from 'flarum/common/extend';
 import Select from 'flarum/common/components/Select';
+import Button from 'flarum/common/components/Button';
 import extractText from 'flarum/common/utils/extractText';
 
 import { TYPES, typeLabel, warningVocabulary } from '../common/ao3';
+
+function fetchAo3Metadata(fields, onDone) {
+  const match = (fields.ao3FicUrl || '').match(/archiveofourown\.org\/works\/(\d+)/);
+
+  if (!match) {
+    app.alerts.show({ type: 'error' }, app.translator.trans('ao3-companion.forum.composer.fetch_bad_url'));
+    onDone();
+    return;
+  }
+
+  app
+    .request({ method: 'GET', url: `${app.forum.attribute('apiUrl')}/ao3/work/${match[1]}` })
+    .then((data) => {
+      if (data.title && !fields.ao3FicTitle) {
+        fields.ao3FicTitle = data.title;
+      }
+
+      // AO3 capitalizes connective words inconsistently ("Depictions Of
+      // Violence"), so match against the vocabulary case-insensitively.
+      const byLower = new Map(warningVocabulary(app).map((w) => [w.toLowerCase(), w]));
+      const suggested = (data.warnings || []).map((w) => byLower.get(w.toLowerCase())).filter(Boolean);
+
+      fields.ao3ContentWarnings = [...new Set([...(fields.ao3ContentWarnings || []), ...suggested])];
+
+      app.alerts.show(
+        { type: 'success' },
+        app.translator.trans('ao3-companion.forum.composer.fetch_success', {
+          title: data.title || '?',
+          rating: data.rating || '—',
+        })
+      );
+    })
+    .catch(() => {
+      app.alerts.show({ type: 'error' }, app.translator.trans('ao3-companion.forum.composer.fetch_failed'));
+    })
+    .finally(onDone);
+}
 
 export default function addComposerFields() {
   extend('flarum/forum/components/DiscussionComposer', 'oninit', function () {
@@ -56,6 +94,23 @@ export default function addComposerFields() {
           />
           {showDetails && textInput('ao3FicTitle', 'fic_title_placeholder')}
           {showDetails && textInput('ao3FicUrl', 'fic_url_placeholder', { type: 'url' })}
+          {showDetails && (
+            <Button
+              className="Button Ao3FetchButton"
+              icon="fas fa-wand-magic-sparkles"
+              loading={this.ao3Fetching}
+              disabled={!/archiveofourown\.org\/works\/\d+/.test(fields.ao3FicUrl || '')}
+              onclick={() => {
+                this.ao3Fetching = true;
+                fetchAo3Metadata(fields, () => {
+                  this.ao3Fetching = false;
+                  m.redraw();
+                });
+              }}
+            >
+              {app.translator.trans('ao3-companion.forum.composer.fetch_button')}
+            </Button>
+          )}
         </div>
         {showDetails && (
           <div className="Ao3ComposerFields-row">

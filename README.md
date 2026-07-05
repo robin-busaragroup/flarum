@@ -12,7 +12,7 @@ A **privacy-first, anonymous forum for AO3 readers to discuss fanfics**, built o
 | **Fandom tags** | `flarum/tags` primary tags — one space per fandom (Harry Potter, Marvel, Anime & Manga, K-Pop & RPF, Books & Lit, Other Fandoms seeded) |
 | **Pairing/ship tags** | Secondary tags (Drarry, Wolfstar, Stucky, Reylo, Rare Pairs, Gen) plus trope tags (Fluff, Angst, Hurt/Comfort, AU, Slow Burn, Fix-It, Canon Divergence, Long Fic) |
 | **Spoiler labels** | Per-thread "Spoilers through …" scope shown as a badge; `[spoiler]…[/spoiler]` and `[spoiler=Chapter 12]…[/spoiler]` collapsed blocks; `\|\|inline\|\|` blacked-out spoiler text |
-| **Fic recommendation threads** | `Fic Rec` thread type with fic title + AO3 link metadata card and a dedicated sidebar filter |
+| **Fic recommendation threads** | `Fic Rec` thread type with fic title + AO3 link metadata card and a dedicated sidebar filter; *Fetch from AO3* auto-fills the title and archive warnings from a pasted work link |
 | **Chapter discussion threads** | `Chapter Discussion` thread type with chapter number + spoiler scope on the thread header |
 | **"Looking for a fic" posts** | `Looking for a Fic` thread type with its own badge and sidebar filter; the OP (or a mod) can *Mark as found*, which adds a green Found badge and makes the thread searchable via `is:found` |
 | **Content warning filters** | Threads carry AO3-style archive warnings (admin-editable vocabulary); each reader picks warnings to filter in Settings → matching threads are blurred in lists, and direct links are blocked by a full-page interstitial until the reader opts in |
@@ -29,8 +29,9 @@ A **privacy-first, anonymous forum for AO3 readers to discuss fanfics**, built o
   preferences, visible and writable only by the account that owns them.
 - **GDPR tooling** — `flarum/gdpr` gives every user self-service data export and erasure
   requests.
-- **Last-seen hidden from staff** — the mod "view last seen" permission is removed;
-  users can additionally hide online status per account.
+- **Online status hidden by default** — every new account starts with
+  `discloseOnline` off (opt-in, not opt-out), the mod "view last seen" permission is
+  removed, and the AO3 metadata lookup runs server-side so AO3 never sees reader IPs.
 - **Local-first storage** — SQLite by default; no third-party services required to run.
 
 ## The `ao3/companion` extension
@@ -50,6 +51,9 @@ Lives in [`extensions/ao3-companion`](extensions/ao3-companion) and provides:
 - "Edit AO3 details" modal in the discussion controls — the thread starter can always
   correct their own metadata and content warnings, with no edit-window cutoff.
 - Spoiler BBCode + inline spoiler formatter.
+- `GET /api/ao3/work/{id}`: server-side AO3 work metadata lookup (title, rating,
+  archive warnings, fandoms, ships, chapter count). Registered users only, and
+  SSRF-safe — the URL is constructed from a numeric work id against a fixed host.
 - Admin settings: warning vocabulary (one per line), IP anonymization toggle,
   "require a thread type" toggle.
 

@@ -7,10 +7,12 @@
  * privacy hardening for a fanfic discussion forum.
  */
 
+use Ao3\Companion\Api\Controller\Ao3WorkLookupController;
 use Ao3\Companion\Api\DiscussionResourceFields;
 use Ao3\Companion\Api\UserResourceFields;
 use Ao3\Companion\Formatter\ConfigureSpoilers;
 use Ao3\Companion\Listener\AnonymizeIpAddress;
+use Ao3\Companion\Listener\PrivacyDefaults;
 use Ao3\Companion\Query\Ao3SolvedFilter;
 use Ao3\Companion\Query\Ao3TypeFilter;
 use Flarum\Api\Resource;
@@ -18,6 +20,7 @@ use Flarum\Discussion\Discussion;
 use Flarum\Discussion\Search\DiscussionSearcher;
 use Flarum\Extend;
 use Flarum\Post\Event\Saving as PostSaving;
+use Flarum\User\Event\Registered;
 use Flarum\Search\Database\DatabaseSearchDriver;
 use Flarum\User\User;
 
@@ -58,7 +61,11 @@ return [
         ->configure(ConfigureSpoilers::class),
 
     (new Extend\Event())
-        ->listen(PostSaving::class, AnonymizeIpAddress::class),
+        ->listen(PostSaving::class, AnonymizeIpAddress::class)
+        ->listen(Registered::class, PrivacyDefaults::class),
+
+    (new Extend\Routes('api'))
+        ->get('/ao3/work/{id:\d+}', 'ao3.work', Ao3WorkLookupController::class),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
         ->addFilter(DiscussionSearcher::class, Ao3TypeFilter::class)

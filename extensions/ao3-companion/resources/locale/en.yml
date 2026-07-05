@@ -22,6 +22,10 @@ ao3-companion:
       content_warnings_none: None apply
       details_heading: "AO3 details"
       type_required_alert: Please choose a thread type before posting.
+      fetch_button: Fetch from AO3
+      fetch_bad_url: That doesn't look like an AO3 work link.
+      fetch_success: "Found: {title} ({rating})"
+      fetch_failed: Couldn't fetch that work — it may be restricted or AO3 may be unreachable.
 
     badges:
       spoilers: "Spoilers: {scope}"
