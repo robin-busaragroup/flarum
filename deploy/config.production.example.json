@@ -1,0 +1,35 @@
+{
+  "//": "One-time install config for `php flarum install -f config.production.json`.",
+  "//2": "Copy this file, fill in the CAPS placeholders, then DELETE it after install (it holds the admin password).",
+
+  "debug": false,
+  "baseUrl": "https://YOUR_DOMAIN",
+
+  "databaseConfiguration": {
+    "driver": "mysql",
+    "host": "127.0.0.1",
+    "port": 3306,
+    "database": "YOUR_DB_NAME",
+    "username": "YOUR_DB_USER",
+    "password": "YOUR_DB_PASSWORD"
+  },
+
+  "adminUser": {
+    "username": "admin",
+    "password": "USE_A_STRONG_PASSWORD_HERE",
+    "email": "you@YOUR_DOMAIN"
+  },
+
+  "settings": {
+    "forum_title": "AOFORUM",
+    "forum_description": "A privacy-first anonymous forum for AO3 readers to discuss fanfics.",
+    "welcome_title": "Welcome to AOFORUM",
+    "welcome_message": "Discuss fanfics with fellow AO3 readers. Tag your fandoms and ships, label your spoilers, respect content warnings. No real names required.",
+    "display_name_driver": "nickname",
+    "flarum-nicknames.set_on_registration": "1",
+    "flarum-nicknames.unique": "1",
+    "flarum-nicknames.max": "50",
+    "theme_primary_color": "#8B0000",
+    "theme_secondary_color": "#8B0000"
+  }
+}

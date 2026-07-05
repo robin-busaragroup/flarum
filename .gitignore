@@ -7,7 +7,7 @@ vendor
 server
 core
 studio.json
-composer.lock
+# composer.lock is committed on purpose — reproducible production installs.
 
 storage/*.sqlite
 extensions/*/js/node_modules
