@@ -43,7 +43,17 @@ export default function addComposerFields() {
       'ao3Fields',
       <div className="Ao3ComposerFields">
         <div className="Ao3ComposerFields-row">
-          <Select value={fields.ao3Type} options={typeOptions} onchange={(value) => (fields.ao3Type = value)} />
+          <Select
+            value={fields.ao3Type}
+            options={typeOptions}
+            onchange={(value) => {
+              fields.ao3Type = value;
+
+              // A stale chapter number from a previously selected type would
+              // silently attach to the new thread.
+              if (value !== 'chapter') fields.ao3Chapter = '';
+            }}
+          />
           {showDetails && textInput('ao3FicTitle', 'fic_title_placeholder')}
           {showDetails && textInput('ao3FicUrl', 'fic_url_placeholder', { type: 'url' })}
         </div>

@@ -4,6 +4,8 @@ import addComposerFields from './addComposerFields';
 import addBadges from './addBadges';
 import addFicCard from './addFicCard';
 import addCwFiltering from './addCwFiltering';
+import addCwInterstitial from './addCwInterstitial';
+import addDiscussionControls from './addDiscussionControls';
 import addTypeNavigation from './addTypeNavigation';
 import addSettingsFilters from './addSettingsFilters';
 
@@ -14,6 +16,8 @@ app.initializers.add('ao3-companion', () => {
   addBadges();
   addFicCard();
   addCwFiltering();
+  addCwInterstitial();
+  addDiscussionControls();
   addTypeNavigation();
   addSettingsFilters();
 });

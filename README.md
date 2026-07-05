@@ -14,8 +14,8 @@ A **privacy-first, anonymous forum for AO3 readers to discuss fanfics**, built o
 | **Spoiler labels** | Per-thread "Spoilers through …" scope shown as a badge; `[spoiler]…[/spoiler]` and `[spoiler=Chapter 12]…[/spoiler]` collapsed blocks; `\|\|inline\|\|` blacked-out spoiler text |
 | **Fic recommendation threads** | `Fic Rec` thread type with fic title + AO3 link metadata card and a dedicated sidebar filter |
 | **Chapter discussion threads** | `Chapter Discussion` thread type with chapter number + spoiler scope on the thread header |
-| **"Looking for a fic" posts** | `Looking for a Fic` thread type with its own badge and sidebar filter |
-| **Content warning filters** | Threads carry AO3-style archive warnings (admin-editable vocabulary); each reader picks warnings to filter in Settings → threads matching them are blurred in lists until clicked |
+| **"Looking for a fic" posts** | `Looking for a Fic` thread type with its own badge and sidebar filter; the OP (or a mod) can *Mark as found*, which adds a green Found badge and makes the thread searchable via `is:found` |
+| **Content warning filters** | Threads carry AO3-style archive warnings (admin-editable vocabulary); each reader picks warnings to filter in Settings → matching threads are blurred in lists, and direct links are blocked by a full-page interstitial until the reader opts in |
 | **Private / semi-private fandom spaces** | Restricted tags with scoped permissions — the seeded **Members Lounge** is invisible to guests, visible/postable for members and mods |
 | **Long comments and quote replies** | `flarum/mentions` quote-reply and post mentions; SQLite/MySQL TEXT posts, full Markdown + BBCode |
 
@@ -44,7 +44,11 @@ Lives in [`extensions/ao3-companion`](extensions/ao3-companion) and provides:
 - Composer UI: thread-type select, fic metadata inputs, content-warning checklist.
 - Discussion list: type/spoiler/CW badges, CSS blur + click-to-reveal for filtered threads.
 - Discussion page: fic metadata card with "Open on AO3" link.
-- Server-side `filter[ao3Type]` for the discussion list, wired to sidebar navigation.
+- Server-side `filter[ao3Type]` / `filter[ao3Solved]` for the discussion list, wired to
+  sidebar navigation and to the `type:rec` / `type:chapter` / `type:lff` and `is:found`
+  search gambits.
+- "Edit AO3 details" modal in the discussion controls — the thread starter can always
+  correct their own metadata and content warnings, with no edit-window cutoff.
 - Spoiler BBCode + inline spoiler formatter.
 - Admin settings: warning vocabulary (one per line), IP anonymization toggle,
   "require a thread type" toggle.

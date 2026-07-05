@@ -2,25 +2,7 @@ import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import extractText from 'flarum/common/utils/extractText';
 
-// Discussions the user chose to reveal this session, by id.
-const revealed = new Set();
-
-function matchedWarnings(discussion) {
-  const user = app.session.user;
-
-  if (!user) return [];
-
-  const hidden = user.ao3HiddenWarnings() || [];
-  const warnings = discussion.ao3ContentWarnings() || [];
-
-  const matched = warnings.filter((w) => hidden.includes(w));
-
-  if (user.ao3HideSpoilers() && discussion.ao3SpoilerScope()) {
-    matched.push(extractText(app.translator.trans('ao3-companion.forum.badges.spoilers_generic')));
-  }
-
-  return matched;
-}
+import { revealed, matchedWarnings } from './cwState';
 
 export default function addCwFiltering() {
   extend('flarum/forum/components/DiscussionListItem', 'elementAttrs', function (attrs) {

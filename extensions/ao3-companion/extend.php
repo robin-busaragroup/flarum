@@ -11,6 +11,7 @@ use Ao3\Companion\Api\DiscussionResourceFields;
 use Ao3\Companion\Api\UserResourceFields;
 use Ao3\Companion\Formatter\ConfigureSpoilers;
 use Ao3\Companion\Listener\AnonymizeIpAddress;
+use Ao3\Companion\Query\Ao3SolvedFilter;
 use Ao3\Companion\Query\Ao3TypeFilter;
 use Flarum\Api\Resource;
 use Flarum\Discussion\Discussion;
@@ -23,6 +24,7 @@ use Flarum\User\User;
 return [
     (new Extend\Frontend('forum'))
         ->js(__DIR__.'/js/dist/forum.js')
+        ->jsDirectory(__DIR__.'/js/dist/forum')
         ->css(__DIR__.'/resources/less/forum.less'),
 
     (new Extend\Frontend('admin'))
@@ -32,7 +34,8 @@ return [
 
     (new Extend\Model(Discussion::class))
         ->cast('ao3_chapter', 'int')
-        ->cast('ao3_content_warnings', 'array'),
+        ->cast('ao3_content_warnings', 'array')
+        ->cast('ao3_solved', 'bool'),
 
     (new Extend\Model(User::class))
         ->cast('ao3_hidden_warnings', 'array')
@@ -58,5 +61,6 @@ return [
         ->listen(PostSaving::class, AnonymizeIpAddress::class),
 
     (new Extend\SearchDriver(DatabaseSearchDriver::class))
-        ->addFilter(DiscussionSearcher::class, Ao3TypeFilter::class),
+        ->addFilter(DiscussionSearcher::class, Ao3TypeFilter::class)
+        ->addFilter(DiscussionSearcher::class, Ao3SolvedFilter::class),
 ];

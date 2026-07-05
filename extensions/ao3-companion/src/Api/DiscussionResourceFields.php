@@ -18,9 +18,18 @@ class DiscussionResourceFields
 
     public function __invoke(): array
     {
-        $writable = function (Discussion $discussion, Context $context): bool {
+        // The thread starter can always correct their own AO3 metadata
+        // (content warnings especially) — no edit-window cutoff.
+        $canEdit = function (Discussion $discussion, Context $context): bool {
+            $actor = $context->getActor();
+
+            return ($discussion->user_id && $actor->id === $discussion->user_id)
+                || $actor->can('rename', $discussion);
+        };
+
+        $writable = function (Discussion $discussion, Context $context) use ($canEdit): bool {
             return $context->creating()
-                || ($context->updating() && $context->getActor()->can('rename', $discussion));
+                || ($context->updating() && $canEdit($discussion, $context));
         };
 
         return [
@@ -82,6 +91,12 @@ class DiscussionResourceFields
 
                     $discussion->ao3_content_warnings = $warnings ?: null;
                 }),
+
+            Schema\Boolean::make('ao3Solved')
+                ->writable(fn (Discussion $discussion, Context $context) => $context->updating() && $canEdit($discussion, $context)),
+
+            Schema\Boolean::make('canAo3Edit')
+                ->get(fn (Discussion $discussion, Context $context) => $canEdit($discussion, $context)),
         ];
     }
 

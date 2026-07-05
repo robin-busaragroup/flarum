@@ -26,11 +26,25 @@ ao3-companion:
     badges:
       spoilers: "Spoilers: {scope}"
       spoilers_generic: Spoilers
+      found: Found
 
     discussion:
       fic_title: "Fic: {title}"
       chapter: "Chapter {number}"
       open_on_ao3: Open on AO3
+      edit_details: Edit AO3 details
+      mark_found: Mark as found
+      mark_unfound: Mark as not found
+
+    interstitial:
+      heading: Content warning
+      body: "This thread is filtered by your settings: {warnings}"
+      show: Show thread
+      back: Go back
+
+    modal:
+      title: AO3 details
+      submit: Save
 
     filters:
       hidden_by_cw: This thread is hidden by your content filters ({warnings})

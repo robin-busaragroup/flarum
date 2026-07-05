@@ -25,6 +25,11 @@
   color: #fff;
 }
 
+.Badge--ao3-found {
+  background: #1b5e20;
+  color: #fff;
+}
+
 // ---- Content-warning chips ----------------------------------------------
 
 .Ao3Cw {
@@ -99,6 +104,44 @@
     font-weight: bold;
     color: var(--muted-color);
     cursor: pointer;
+  }
+}
+
+// ---- Content-warning interstitial (direct navigation into a thread) ------
+
+.Ao3Interstitial {
+  display: flex;
+  align-items: center;
+  min-height: 60vh;
+
+  &-card {
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 30px;
+    text-align: center;
+    border: 1px solid var(--control-bg);
+    border-radius: var(--border-radius);
+    background: var(--body-bg-shaded);
+
+    h2 {
+      margin: 10px 0;
+    }
+
+    p {
+      color: var(--muted-color);
+    }
+  }
+
+  &-icon {
+    font-size: 32px;
+    color: var(--muted-color);
+  }
+
+  &-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
   }
 }
 

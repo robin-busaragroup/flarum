@@ -17,6 +17,19 @@ export default function addBadges() {
       );
     }
 
+    if (type === 'lff' && this.ao3Solved()) {
+      badges.add(
+        'ao3Found',
+        <Badge
+          type="ao3-found"
+          label={app.translator.trans('ao3-companion.forum.badges.found')}
+          icon="fas fa-check-circle"
+          tabindex="0"
+        />,
+        10
+      );
+    }
+
     const scope = this.ao3SpoilerScope();
 
     if (scope) {
